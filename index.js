@@ -21,7 +21,7 @@ const logMiddleware=(req,res,next)=>{
     next();
 }
 
-app.use(logMiddleware);
+//app.use(logMiddleware);
 
 const authMiddleware=(req,res,next)=>{
     if(!req.session.currentuser){
@@ -59,13 +59,21 @@ app.post('/login',(req,res)=>{
     
 
 app.post('/deposit',authMiddleware,(req,res)=>{
-    const result=dataservice.deposit(req,req.body.acno,req.body.pswd,req.body.amount);
-    res.status(result.statusCode).json(result)
+    console.log(req.session.currentuser)
+    dataservice.deposit(req.body.acno,req.body.pswd,req.body.amount)
+   
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
+    
 })
 
 app.post('/withdraw',authMiddleware,(req,res)=>{
-    const result=dataservice.withdraw(req.body.acno,req.body.pswd,req.body.amount);
-    res.status(result.statusCode).json(result)
+    dataservice.withdraw(req.body.acno,req.body.pswd,req.body.amount)
+    .then(result=>{
+        res.status(result.statusCode).json(result)
+    })
+    
 })
 
 app.put('/',(req,res)=>{
